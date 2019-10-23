@@ -1,7 +1,7 @@
 package cop5556fa19.AST;
 
-import scanner.Token;
-import scanner.Token.Kind;
+import cop5556fa19.Token;
+import cop5556fa19.Token.Kind;
 
 public class ExpUnary extends Exp {
 

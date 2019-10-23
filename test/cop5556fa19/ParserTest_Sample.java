@@ -39,10 +39,10 @@ import cop5556fa19.AST.StatBreak;
 import cop5556fa19.AST.StatDo;
 import cop5556fa19.AST.StatGoto;
 import cop5556fa19.AST.StatLabel;
-import scanner.Scanner;
-import scanner.Token;
+import cop5556fa19.Scanner;
+import cop5556fa19.Token;
 
-import static scanner.Token.Kind.*;
+import static cop5556fa19.Token.Kind.*;
 
 class ParserTest_Sample {
 

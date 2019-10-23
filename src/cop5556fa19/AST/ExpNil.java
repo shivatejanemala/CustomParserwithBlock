@@ -1,7 +1,7 @@
 package cop5556fa19.AST;
 
-import scanner.Token;
-import static scanner.Token.Kind.*;
+import cop5556fa19.Token;
+import static cop5556fa19.Token.Kind.*;
 
 public class ExpNil extends Exp {
 	

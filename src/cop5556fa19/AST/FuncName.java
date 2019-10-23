@@ -3,7 +3,7 @@ package cop5556fa19.AST;
 import java.util.ArrayList;
 import java.util.List;
 
-import scanner.Token;
+import cop5556fa19.Token;
 
 public class FuncName extends ASTNode {
 

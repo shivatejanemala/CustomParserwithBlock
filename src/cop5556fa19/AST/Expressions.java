@@ -1,14 +1,14 @@
 package cop5556fa19.AST;
 
-import static scanner.Token.Kind.SEMI;
-import static scanner.Token.Kind.*;
+import static cop5556fa19.Token.Kind.SEMI;
+import static cop5556fa19.Token.Kind.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import scanner.Token;
-import scanner.Token.Kind;
+import cop5556fa19.Token;
+import cop5556fa19.Token.Kind;
 
 public class Expressions {
 	

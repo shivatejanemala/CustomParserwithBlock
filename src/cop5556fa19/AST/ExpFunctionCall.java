@@ -1,6 +1,6 @@
 package cop5556fa19.AST;
 
-import scanner.Token;
+import cop5556fa19.Token;
 import java.util.List;
 
 public class ExpFunctionCall extends Exp {

@@ -1,7 +1,7 @@
 package cop5556fa19.AST;
 
-import scanner.Token;
-import static scanner.Token.Kind.KW_false;
+import cop5556fa19.Token;
+import static cop5556fa19.Token.Kind.KW_false;
 
 public class ExpFalse extends Exp {
 
