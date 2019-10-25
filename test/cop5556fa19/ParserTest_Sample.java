@@ -123,6 +123,18 @@ class ParserTest_Sample {
 	}
 	
 	@Test
+	void testDoBlock() throws Exception {
+		String input = "goto abc goto abcd ";
+		Block b = parseBlockAndShow(input);		
+		/*List<Exp> lhs = Expressions.makeExpList(Expressions.makeExpName("a"));
+		List<Exp> rhs = Expressions.makeExpList(Expressions.makeExpName("b"));
+		StatAssign s = Expressions.makeStatAssign(lhs,rhs);
+		Block expected = Expressions.makeBlock(s);
+		assertEquals(expected,b);*/
+		System.out.println(b);
+	}
+	
+	@Test
 	void testAssignChunk1() throws Exception {
 		String input = "a=b";
 		ASTNode c = parseAndShow(input);		
@@ -232,6 +244,52 @@ class ParserTest_Sample {
 		Block expectedBlock = Expressions.makeBlock(s0,s1,statdo,statBreak);
 		Chunk expectedChunk = new Chunk(expectedBlock.firstToken, expectedBlock);
 		assertEquals(expectedChunk,c);
+	}
+	
+	@Test
+	void testSquare() throws Exception{
+		String input = "a[b]= g(k,l)[x.y]";
+		ASTNode c = parseAndShow(input);
+		Exp a = Expressions.makeExpName("a");
+		Exp b = Expressions.makeExpName("b");
+		Exp  result = Expressions.makeExpTableLookup(a, b);
+		ExpName g = Expressions.makeExpName("g");
+		ExpName k = Expressions.makeExpName("k");
+		ExpName l = Expressions.makeExpName("l");
+		ExpName x = Expressions.makeExpName("x");
+		ExpString y = Expressions.makeExpString("y");
+		List<Exp> args = Expressions.makeExpList(k,l);
+		Exp function = Expressions.makeExpFunCall(g, args, null);
+		Exp key = Expressions.makeExpTableLookup(x, y);
+		Exp gtable = Expressions.makeExpTableLookup(function,key);
+		Stat s0 = Expressions.makeStatAssign(result, gtable);
+		Block expectedBlock = Expressions.makeBlock(s0);
+		Chunk expectedChunk = new Chunk(expectedBlock.firstToken,expectedBlock);
+		assertEquals(expectedChunk,c);
+	}
+	
+
+	@Test
+	void testvarlistparen() throws Exception{
+		String input = "for k = x+y,function (a,b) end do while a+fg do goto abc end end"; //(a+b):g(x) = a[b] //(a+b):g(x) = a[b] return{},{3,a},{[x + y] = xx * yy,},function (a,b) end,nil;
+		ASTNode c = parseAndShow(input);
+		/*Exp a = Expressions.makeExpName("a");
+		Exp b = Expressions.makeExpName("b"); (a+b):g(x) = (a+b).g((a+b),x) = (a+b)["g"]((a+b),x) 
+		Exp  result = Expressions.makeExpTableLookup(a, b);
+		ExpName g = Expressions.makeExpName("g");
+		ExpName k = Expressions.makeExpName("k");
+		ExpName l = Expressions.makeExpName("l");	
+		ExpName x = Expressions.makeExpName("x");
+		ExpString y = Expressions.makeExpString("y");
+		List<Exp> args = Expressions.makeExpList(k,l);
+		Exp function = Expressions.makeExpFunCall(g, args, null);
+		Exp key = Expressions.makeExpTableLookup(x, y);
+		Exp gtable = Expressions.makeExpTableLookup(function,key);
+		Stat s0 = Expressions.makeStatAssign(result, gtable);
+		Block expectedBlock = Expressions.makeBlock(s0);
+		Chunk expectedChunk = new Chunk(expectedBlock.firstToken,expectedBlock);
+		assertEquals(expectedChunk,c);*/
+		System.out.println(c);
 	}
 }
 

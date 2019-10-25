@@ -255,7 +255,7 @@ public class Scanner {
 					sb = new StringBuilder();
 					return t;
 				}
-				if(Character.isJavaIdentifierPart(a) || Character.compare('$', a)==0 ||Character.compare('_', a)==0 ||Character.compare(';', a)==0  ) {
+				if(Character.isJavaIdentifierPart(a) || Character.compare('$', a)==0 ||Character.compare('_', a)==0 /*||Character.compare(';', a)==0*/  ) {
 				sb.append((char)a);
 				if(numPos != testString.length()-1 && Character.compare(';', a)!=0){
 					return getNext();
@@ -724,6 +724,7 @@ public class Scanner {
 				case "true": t = new Token(KW_true,t.text,numPos,lineNo);break;
 				case "until": t = new Token(KW_until,t.text,numPos,lineNo);break;
 				case "while": t = new Token(KW_while,t.text,numPos,lineNo);break;
+				case "goto": t = new Token(KW_goto,t.text,numPos,lineNo);break;
 				
 			}
 		}
