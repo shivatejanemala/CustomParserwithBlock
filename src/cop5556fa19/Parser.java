@@ -652,17 +652,35 @@ private Exp andExp() throws Exception{
 	private Exp ColonSyntacticSugar(Exp ee) throws Exception {
 		// TODO Auto-generated method stub
 		Token first = t;
+		List<Exp> expList = expListBlock();
 		match(COLON);
 		if(isKind(NAME)) {
 			Token a = consume();
-			match(LPAREN);
-			List<Exp> expList = expListBlock();
 			expList.add(ee);
-			ee = new ExpTableLookup(first,ee,new ExpString(a));
-			ee = new ExpFunctionCall(first, ee, expList);
-			match(RPAREN);
+			switch(t.kind) {
+			case LPAREN: {
+				match(LPAREN);
+				ee = new ExpTableLookup(first,ee,new ExpString(a));
+				ee = new ExpFunctionCall(first, ee, expList);
+				match(RPAREN);
+			}break;
+			case LCURLY:{
+				match(LCURLY);
+				List<Field> fields = fieldlistexp();
+				Exp e1 = new ExpTable(first, fields);
+				ee = new ExpTableLookup(first,ee,new ExpString(a));
+				expList.add(e1);
+				ee = new ExpFunctionCall(first, ee, expList);
+				match(RCURLY);
+			}break;
+			case STRINGLIT:{
+				Exp e1 = new ExpString(consume());
+				expList.add(e1);
+				ee = new ExpTableLookup(first,ee,new ExpString(a));
+				ee = new ExpFunctionCall(first, ee, expList);
+			}
+			}
 		}
-		
 		return ee;
 	}
 	private Stat functionBlock()  throws Exception{
@@ -749,6 +767,7 @@ private Exp andExp() throws Exception{
 		expList = expListBlock();
 		match(KW_do);
 		Block e1 = block(KW_end,KW_until);
+		match(KW_end);
 		e0 = new StatForEach(name, nameList, expList, e1);
 		return e0;
 	}
@@ -758,25 +777,16 @@ private Exp andExp() throws Exception{
 		Exp e0 = exp();
 		
 		if(e0 !=null) {
-			while(isKind(DOT)) {
-				e0 = DotTableLookupBlock(e0);
-			}
-			if(isKind(LPAREN)) {
-				e0 = functionCallObject(e0);
-			}
-			while(isKind(LSQUARE)) {
-				e0 = TableLookupBlock(e0);
+			while(isKind(DOT) || isKind(LPAREN) || isKind(COLON) || isKind(LSQUARE)) {
+				e0 = prefixTailexp(e0);
 			}
 			expList.add(e0);
 		}
 		while(isKind(COMMA)) {
 			match(COMMA);
 			Exp e1 = exp();
-			while(isKind(DOT)) {
-				e0 = DotTableLookupBlock(e0);
-			}
-			if(isKind(LPAREN)) {
-				e1 = functionCallObject(e1);
+			while(isKind(DOT) || isKind(LPAREN) || isKind(COLON) || isKind(LSQUARE)) {
+				e1 = prefixTailexp(e1);
 			}
 			if(e1!=null) {
 				expList.add(e1);
@@ -849,7 +859,7 @@ private Exp andExp() throws Exception{
 			expList.add(e0);
 		}
 		match(KW_then);
-		Block e1 = block(KW_end,KW_until,KW_elseif);
+		Block e1 = block(KW_end,KW_until,KW_elseif,KW_else);
 		if(e1!=null) {
 			blockList.add(e1);
 		}
@@ -867,7 +877,7 @@ private Exp andExp() throws Exception{
 			}
 				expList.add(e0);
 			match(KW_then);
-			e1 = block(KW_end,KW_until,KW_elseif);
+			e1 = block(KW_end,KW_until,KW_elseif,KW_else);
 			blockList.add(e1);
 		}
 		if(isKind(KW_else)) {
@@ -896,6 +906,7 @@ private Exp andExp() throws Exception{
 		Exp e0 = exp();
 		match(KW_do);
 		Block e1=block(KW_end,KW_until);
+		match(KW_end);
 		return new StatWhile(first, e0, e1);
 	}
 
