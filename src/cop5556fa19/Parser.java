@@ -804,6 +804,9 @@ private Exp andExp() throws Exception{
 		while(isKind(DOT)) {
 			e2 = DotTableLookupBlock(e2);
 		}
+		while(isKind(LSQUARE)) {
+			e2 = TableLookupBlock(e2);
+		}
 		if(e2!=null) {
 			args.add(e2);
 		}
@@ -894,7 +897,7 @@ private Exp andExp() throws Exception{
 	private Stat repeatBlock()  throws Exception{
 		Token first = t;
 		match(KW_repeat);
-		Block e0 = block();
+		Block e0 = block(KW_until);
 		match(KW_until);
 		Exp e1 = exp();
 		return new StatRepeat(first, e0, e1);

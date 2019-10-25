@@ -271,7 +271,7 @@ class ParserTest_Sample {
 
 	@Test
 	void testvarlistparen() throws Exception{
-		String input = "for k = x+y,function (a,b) end do while a+fg do goto abc end end"; //(a+b):g(x) = a[b] //(a+b):g(x) = a[b] return{},{3,a},{[x + y] = xx * yy,},function (a,b) end,nil;
+		String input = "repeat  goto abc  until x+y+z"; //(a+b):g(x) = a[b] //(a+b):g(x) = a[b] return{},{3,a},{[x + y] = xx * yy,},function (a,b) end,nil;
 		ASTNode c = parseAndShow(input);
 		/*Exp a = Expressions.makeExpName("a");
 		Exp b = Expressions.makeExpName("b"); (a+b):g(x) = (a+b).g((a+b),x) = (a+b)["g"]((a+b),x) 
