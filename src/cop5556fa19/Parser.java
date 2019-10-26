@@ -587,7 +587,7 @@ private Exp andExp() throws Exception{
 		if(isKind(NAME)) {
 			Token a = consume();
 			 ee = new ExpName(a);
-			while(isKind(LPAREN) || isKind(DOT) || isKind(LSQUARE) || isKind(COLON)) {
+			while(isKind(LPAREN) || isKind(DOT) || isKind(LSQUARE) || isKind(COLON) ||  isKind(STRINGLIT) || isKind(LCURLY)) {
 				ee = prefixTailexp(ee);
 				
 			}
@@ -604,7 +604,7 @@ private Exp andExp() throws Exception{
 	}
 
 	private Exp prefixTailexp(Exp ee) throws Exception{
-		if(isKind(LPAREN)) {
+		if(isKind(LPAREN) || isKind(STRINGLIT) || isKind(LCURLY)) {
 			ee = functionCallObject(ee);
 		}
 		else if(isKind(DOT) ) {
@@ -777,7 +777,7 @@ private Exp andExp() throws Exception{
 		Exp e0 = exp();
 		
 		if(e0 !=null) {
-			while(isKind(DOT) || isKind(LPAREN) || isKind(COLON) || isKind(LSQUARE)) {
+			while(isKind(DOT) || isKind(LPAREN) || isKind(COLON) || isKind(LSQUARE) || isKind(LCURLY) || isKind(STRINGLIT)) {
 				e0 = prefixTailexp(e0);
 			}
 			expList.add(e0);
@@ -798,29 +798,63 @@ private Exp andExp() throws Exception{
 	private Exp functionCallObject(Exp e1) throws Exception {
 		Exp e0=null;
 		Token first = t;
-		match(LPAREN);
 		List<Exp> args = new ArrayList<>();
-		Exp e2 = exp();
-		while(isKind(DOT)) {
-			e2 = DotTableLookupBlock(e2);
-		}
-		while(isKind(LSQUARE)) {
-			e2 = TableLookupBlock(e2);
-		}
-		if(e2!=null) {
-			args.add(e2);
-		}
-		while(isKind(COMMA)) {
-			match(COMMA);
-			e2 = exp();
-			if(e2!=null) {
+		switch (t.kind) {
+			case LPAREN:{
+				match(LPAREN);
+				Exp e2 = exp();
 				while(isKind(DOT)) {
 					e2 = DotTableLookupBlock(e2);
 				}
-				args.add(e2);
+				while(isKind(LSQUARE)) {
+					e2 = TableLookupBlock(e2);
+				}
+				if(e2!=null) {
+					args.add(e2);
+				}
+				while(isKind(COMMA)) {
+					match(COMMA);
+					e2 = exp();
+					if(e2!=null) {
+						while(isKind(DOT)) {
+							e2 = DotTableLookupBlock(e2);
+						}
+						args.add(e2);
+					}
+				}
+				match(RPAREN);
+			}break;
+			case LCURLY:{
+				match(LCURLY);
+				Exp e2 = exp();
+				while(isKind(DOT)) {
+					e2 = DotTableLookupBlock(e2);
+				}
+				while(isKind(LSQUARE)) {
+					e2 = TableLookupBlock(e2);
+				}
+				if(e2!=null) {
+					args.add(e2);
+				}
+				while(isKind(COMMA)) {
+					match(COMMA);
+					e2 = exp();
+					if(e2!=null) {
+						while(isKind(DOT)) {
+							e2 = DotTableLookupBlock(e2);
+						}
+						args.add(e2);
+					}
+				}
+				match(RCURLY);
+			}break;
+			case STRINGLIT:{
+				Exp e2 = exp();
+				if(e2!=null) {
+					args.add(e2);
+				}
 			}
 		}
-		match(RPAREN);
 		e0 = new ExpFunctionCall(first, e1, args);
 		return e0;
 	}
